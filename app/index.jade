@@ -10,14 +10,17 @@ html(lang='en-US')
       <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
       .container
-        h1 My Chat
+        h1 Chat App
+
+        .chat
+          .chattext
         .chatarea
           form
-            input(type="text" class="name" placeholder="Enter name")
+            input(type="text" class="name" placeholder="Username")
             input(type="text" class="msg" placeholder="Message")
-            input(type="submit" class="chatBtn" value="Send")
-
-        .chattext
+            //input(type="submit" class="button" value="Send")
+            button(type="submit" class="button btn btn-default btn-lg")
+              span(class="glyphicon glyphicon-envelope" aria-hidden="true")
 
       // build:js js/vendor.min.js
       // bower:js

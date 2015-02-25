@@ -1,38 +1,32 @@
 'use strict';
 
-var fb           = new Firebase('https://mc-chat.firebaseio.com/'),
-    FIREBASE_URL = 'https://mc-chat.firebaseio.com/',
-    $chatBtn     = $('.chatBtn');
+var fb = new Firebase('https://mc-chat.firebaseio.com/');
 
 $(document).ready(function(){
-  $chatBtn.click(postMsg);
-  addChatBox();
+  $('.container form').submit(function(event){
+    postMsg();
+    event.preventDefault();
+  });
+  $('.chat').animate({ scrollTop: $('.chat')[0].scrollHeight });
 });
 
-
-
-function postMsg(event) {
-  event.preventDefault();
-
+function postMsg() {
   var $msg  = $('.msg').val(),
       $name = $('.name').val(),
-      text  = { name: $name, text: $msg },
-      data  = JSON.stringify(text);
+      text  = ({ name: $name, text: $msg });
 
-  $.post(FIREBASE_URL + '/messages.json', data, function(res){
-      addChatBox(res);
-  });
+  fb.child('/messages').push(text);
+  $msg.val('');
+  $name.val('');
 }
 
-function addChatBox() {
-  $.get(FIREBASE_URL + '/messages.json', function(data){
-    Object.keys(data).forEach(function(uuid){
-      chatDiv(data[uuid]);
-    });
-  });
-}
+fb.on('child_added', function (snap) {
+  var message = snap.val();
+  _.forEach(message, function(info){
+    var d = new Date();
+    var datestamp = moment(d.getTime()).format('llll');
+    var $chat = $('<p><strong>' + info.name + '</strong>' + " (" + datestamp + "): " + info.text + '</p>');
+    $('.chattext').append($chat);
+  })
+});
 
-function chatDiv(msg) {
-  var $chat = $('<p><strong>' + msg.name + '</strong>' + ": " + msg.text + '</p>');
-  $('.chattext').append($chat);
-}
